@@ -46,9 +46,29 @@ missing_summary <- raw_incidents |>
     Missing_Percent = round((Missing_Count / n_raw_rows) * 100, 1)
   )
 
-# Count yearly totals across the entire database to show reporting volume over time
+
+# count yearly totals across the whole database to check reporting volume
 yearly_all_counts <- raw_incidents |>
   count(year, name = "incidents")
 
+# save specific data quality counts for inline report text
+n_missing_domain <- sum(is.na(raw_incidents$risk_domain))
+pct_missing_domain <- round((n_missing_domain / n_raw_rows) * 100, 1)
+n_missing_intent <- sum(is.na(raw_incidents$intent))
+n_pre_2015 <- sum(raw_incidents$year < 2015, na.rm = TRUE)
+n_year_2026 <- sum(raw_incidents$year == 2026, na.rm = TRUE)
+n_other_intent <- sum(raw_incidents$intent == "Other", na.rm = TRUE)
+
+# check how many 2025 incidents are still missing MIT classifications
+n_total_2025 <- sum(raw_incidents$year == 2025, na.rm = TRUE)
+n_unclassified_2025 <- sum(
+  raw_incidents$year == 2025 & is.na(raw_incidents$intent),
+  na.rm = TRUE
+)
+pct_unclassified_2025 <- ifelse(
+  n_total_2025 > 0,
+  round((n_unclassified_2025 / n_total_2025) * 100, 1),
+  0
+)
 
     
