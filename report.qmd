@@ -39,6 +39,59 @@ Before inspecting the results, three measurable criteria were set to evaluate wh
 
 ## 2. Data Understanding
 
+### Data Source and Structure
+
+The dataset comes from the **AI Incident Database (AIID)**, maintained by the Responsible AI Collaborative, which indexes real-world harms and near-misses involving artificial intelligence systems reported in news media and public records. Each row represents one distinct incident (which may be covered by multiple news articles, recorded in `report_count`). In addition to incident dates and descriptions, records are categorised using the **MIT AI Risk Repository taxonomy**, which assigns an `Intent` (`Intentional`, `Unintentional`, or `Other`), a high-level `Risk Domain`, and a narrower `Risk Subdomain`.
+
+The raw export contains **`r n_raw_rows` incidents** across **`r n_raw_cols` columns**, covering incidents dated from **`r min_raw_year` to `r max_raw_year`**. Rather than keeping all `r n_raw_cols` variables—many of which are sparse technical fields—this analysis selects eight core columns: `incident_id`, `year`, `title`, `report_count`, `risk_domain`, `risk_subdomain`, `responsible_entity`, and `intent`.
+
+```{r}
+#| label: fig-yearly-volume
+#| fig-cap: "Total reported AI incidents per year in the raw database (2005–2026). Pre-2005 years have 0 to 1 incident per year and are omitted from the axis for readability."
+#| fig-width: 7.5
+#| fig-height: 4.2
+
+# Plot yearly volume from 2005 onwards to show the surge in reporting and the partial 2026 year
+yearly_all_counts |>
+  filter(year >= 2005) |>
+  ggplot(aes(x = factor(year), y = incidents)) +
+  geom_col(fill = "#2b5c8f", width = 0.75) +
+  labs(
+    title = "Reported AI Incidents Have Grown Rapidly Since 2022",
+    subtitle = "Annual count of all logged incidents in the AI Incident Database (2005–2026)",
+    x = "Incident Year",
+    y = "Number of Reported Incidents"
+  ) +
+  theme_minimal(base_size = 11)
+```
+
+### Initial Exploration and Data Quality Issues
+
+As shown in @fig-yearly-volume, the total number of logged incidents rises steeply over time, especially after 2022. Because total volume grows so rapidly, comparing raw counts of intentional incidents across years would be misleading: any category could appear to grow simply because the database collects more reports each year. For that reason, the main analysis compares **within-year and within-period percentage shares** rather than raw counts.
+
+Inspecting the selected columns also reveals five data quality constraints that directly affect how the data must be prepared (@tbl-missingness):
+
+1.  **Sparse early records:** Across the entire span from `r min_raw_year` to 2014, there are only **`r n_pre_2015` incidents** in total. In years with only one or two incidents, a single event swings the annual intentional share by 50 or 100 percentage points.
+2.  **Incomplete 2026 data:** The year 2026 contains **`r n_year_2026` incidents** because data collection for the current year was still in progress when the snapshot was exported.
+3.  **Unclassified incidents in recent years:** Exactly **`r n_missing_domain` incidents (`r pct_missing_domain`%)** have missing (`NA`) values for `risk_domain` and `intent` (@tbl-missingness). These unclassified records are concentrated in the most recent logs: in 2025 alone, **`r n_unclassified_2025` of `r n_total_2025` incidents (`r pct_unclassified_2025`%)** had not yet received an MIT taxonomy classification.
+4.  **Ambiguous `"Other"` intent:** A small subset of **`r n_other_intent` incidents** is coded as `"Other"` rather than `"Intentional"` or `"Unintentional"`, where intent could not be cleanly established.
+5.  **Media reporting bias:** Because AIID relies on publicly reported articles, it measures *reported* AI harm rather than all occurring harm. High-profile scams, deepfakes, or autonomous vehicle crashes attract news coverage more readily than quiet internal software failures.
+
+```{r}
+#| label: tbl-missingness
+#| tbl-cap: "Missing value counts and percentages across the eight selected analysis columns in the raw dataset."
+
+missing_summary |>
+  rename(
+    `Column Name` = Column,
+    `Missing Rows (n)` = Missing_Count,
+    `Missing Share (%)` = Missing_Percent
+  ) |>
+  kable(align = c("l", "r", "r"))
+```
+
+------------------------------------------------------------------------
+
 ## 3. Data Preparation
 
 ## 4. Analysis
