@@ -109,14 +109,105 @@ To address the quality issues identified in Section 2, four sequential preparati
 ---
 
 
-
-
-
-
-
-
-
 ## 4. Analysis
+
+### Analytical Approach and Assumptions
+
+The analysis proceeds in three steps matched to the success criteria: first, tracking the annual share of intentional versus unintentional incidents from 2015 to 2025; second, comparing pooled intentional shares across the pre-2022 and post-2022 periods; and third, breaking down risk domains and subdomains to see which specific harms account for the shift. Using relative proportions assumes that MIT taxonomy annotators applied the definitions of `Intentional` and `Risk Domain` consistently across older and newer incidents. Because the MIT AI Risk Repository was applied systematically across the historical archive, this assumption is reasonable for classified records.
+
+### Shift from Unintentional Failures to Intentional Misuse
+
+```{r}
+#| label: fig-intent-share
+#| fig-cap: "Annual share of classified AI incidents by intent (2015–2025). The dashed vertical line marks the start of the 2022–2025 period."
+#| fig-width: 7.5
+#| fig-height: 4.3
+
+# Plot annual percentage share of Intentional vs Unintentional incidents over time
+yearly_intent |>
+  ggplot(aes(x = year, y = share, colour = intent, group = intent)) +
+  geom_vline(xintercept = 2021.5, linetype = "dashed", colour = "grey45") +
+  geom_line(linewidth = 1.1) +
+  geom_point(size = 2.6) +
+  scale_x_continuous(breaks = 2015:2025) +
+  scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 20)) +
+  scale_colour_brewer(palette = "Set1", direction = -1) +
+  labs(
+    title = "Deliberate Misuse Overtook Accidental Failures After 2022",
+    subtitle = "Percentage of classified AI incidents by intent per year (2015–2025)",
+    x = "Incident Year",
+    y = "Share of Classified Incidents (%)",
+    colour = "Incident Intent"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "top")
+```
+
+@fig-intent-share shows a clear structural reversal in reported AI harm. Between 2015 and 2021, AI incidents were overwhelmingly accidental: the intentional share remained between **21% and 30%** across most of the period (standing at **`r pct_intent_2015`%** in 2015 and **`r pct_intent_2021`%** in 2021). In 2022, the intentional share rose to **`r pct_intent_2022`%**, before crossing the majority threshold in 2023 (**`r pct_intent_2023`%**) and reaching **`r pct_intent_2025`%** in 2025.
+
+```{r}
+#| label: tbl-period-intent
+#| tbl-cap: "Comparison of classified AI incidents and intentional share before and after 2022."
+
+period_intent_table |>
+  kable(align = c("l", "r", "r", "r", "r"))
+```
+
+Pooling the data into the two periods confirms the scale of this change (@tbl-period-intent). Across `2015–2021`, only **`r pct_intent_pre2022`%** of classified incidents were intentional. Across `2022–2025`, the intentional share rose to **`r pct_intent_post2022`%**—an increase of **`r diff_intent_pp` percentage points**, which is more than double the 15-percentage-point threshold set in Criterion 1.
+
+### Which Risk Domains Drove the Change?
+
+To test whether this shift occurred evenly across all categories or was driven by specific harms, @fig-domain-period compares the distribution of MIT Risk Domains before and after 2022.
+
+```{r}
+#| label: fig-domain-period
+#| fig-cap: "Share of classified AI incidents across MIT Risk Domains in 2015–2021 versus 2022–2025."
+#| fig-width: 8.0
+#| fig-height: 4.6
+
+# Compare risk domain shares before and after 2022 using side-by-side horizontal bars
+domain_period_summary |>
+  mutate(
+    risk_domain_short = fct_rev(risk_domain_short)
+  ) |>
+  ggplot(aes(x = share, y = risk_domain_short, fill = period)) +
+  geom_col(position = "dodge", width = 0.72) +
+  scale_fill_brewer(palette = "Paired") +
+  labs(
+    title = "Malicious Actors & Misuse Drove the Post-2022 Shift",
+    subtitle = "Share of classified incidents within each period by MIT Risk Domain (%)",
+    x = "Share of Period Incidents (%)",
+    y = "MIT Risk Domain",
+    fill = "Time Period"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "top")
+```
+
+As @fig-domain-period illustrates, the shift was heavily concentrated in a single domain:
+
+* **Malicious Actors & Misuse** jumped from **`r pct_misuse_pre2022`%** of classified incidents in `2015–2021` to **`r pct_misuse_post2022`%** in `2022–2025` (an increase of **`r diff_misuse_pp` percentage points**).
+* Over the same timeframe, the relative share of **System Safety & Failures** fell from **`r pct_safety_pre2022`%** to **`r pct_safety_post2022`%**, and **Discrimination & Toxicity** declined from **`r pct_discrim_pre2022`%** to **`r pct_discrim_post2022`%**. Important to note for managers: accidental safety failures did not disappear in absolute terms, but malicious misuse grew so rapidly after 2022 that it came to dominate the overall incident mix.
+
+```{r}
+#| label: tbl-misuse-subdomains
+#| tbl-cap: "Breakdown of incidents within the 'Malicious Actors & Misuse' domain by MIT Risk Subdomain (2015–2025)."
+
+misuse_subdomains |>
+  kable(align = c("l", "r", "r"))
+```
+
+Drilling into the **`r n_total_misuse` incidents** classified under `Malicious Actors & Misuse` (@tbl-misuse-subdomains) pinpoints the exact operational driver: **`r top_misuse_subdomain`** accounts for **`r n_top_misuse_subdomain` incidents (`r pct_top_misuse_subdomain`%)** of the entire domain. These incidents largely involve voice-cloning scams, non-consensual deepfake imagery, financial impersonation frauds, and targeted disinformation campaigns enabled by accessible generative AI tools.
+
+---
+
+
+
+
+
+
+
+
 
 ## 5. Evaluation
 
