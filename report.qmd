@@ -17,6 +17,7 @@ execute:
 ```{r}
 #| label: setup
 source("R/01-load-data.R")
+source("R/02-data-cleaning.R")
 ```
 
 ## 1. Business Understanding
@@ -93,6 +94,27 @@ missing_summary |>
 ------------------------------------------------------------------------
 
 ## 3. Data Preparation
+
+
+To address the quality issues identified in Section 2, four sequential preparation steps were applied to construct the final analysis dataset (`incidents_clean`):
+
+1. **Filter to complete years (`2015–2025`):** Rows before 2015 (`r n_pre_2015` incidents) and rows from the incomplete 2026 year (`r n_year_2026` incidents) were removed, reducing the dataset by **`r n_removed_years` rows** (from `r n_raw_rows` to `r n_after_years`).
+   * *Justification and alternative:* Starting in 2015 guarantees at least 20 classified incidents per year so annual proportions are stable. We considered starting in 2018 (when annual volume exceeds 40), which would reduce noise further, but doing so would discard three years of baseline data from the pre-generative-AI period.
+2. **Remove unclassified incidents:** Rows missing `intent` or `risk_domain` were dropped, removing **`r n_removed_unclassified` rows** and leaving **`r n_after_classified` classified incidents** in `2015–2025`.
+   * *Justification, assumption, and limitation:* An alternative was to keep missing rows as an `"Unclassified"` category on the charts. However, because `NA` reflects an administrative backlog in tagging recent 2025 submissions rather than a distinct type of AI intent, including `NA` in the denominator would artificially depress both intentional and unintentional shares in 2025. Dropping them assumes that unclassified 2025 incidents have a similar intent mix to classified 2025 incidents; we test the sensitivity of this assumption in Section 5.
+3. **Exclude `"Other"` intent:** The **`r n_removed_other` incidents** coded as `"Other"` within `2015–2025` were excluded so `intent` forms a direct binary comparison (`Intentional` vs `Unintentional`). This yields a final clean dataset of **`r n_clean_rows` incidents** (**`r pct_retained`%** of the raw database).
+4. **Create the `period` split and shorten category labels:** Incidents were grouped into two periods: **`2015-2021 (Pre-2022)`** and **`2022-2025 (2022 Onwards)`**. Long MIT domain names (such as `"AI system safety, failures, and limitations"`) were shortened to readable factor labels (such as `"System Safety & Failures"`), ordered by overall volume.
+   * *Justification and alternative:* Splitting at 2022 captures the commercial mainstreaming of generative text, image, and voice models (such as Stable Diffusion, Midjourney, and ChatGPT in 2022). An alternative split at 2023 (the first full calendar year after ChatGPT's November 2022 release) was considered, but the annual data in Section 4 shows that the upward inflection in deliberate misuse already begins during 2022.
+
+---
+
+
+
+
+
+
+
+
 
 ## 4. Analysis
 
