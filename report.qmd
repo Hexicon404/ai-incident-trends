@@ -201,14 +201,23 @@ Drilling into the **`r n_total_misuse` incidents** classified under `Malicious A
 
 ---
 
-
-
-
-
-
-
-
-
 ## 5. Evaluation
+
+### Assessment Against Success Criteria
+
+1. **Criterion 1 (Shift > 15 percentage points) — Met:** The share of intentional incidents increased from **`r pct_intent_pre2022`%** in `2015–2021` to **`r pct_intent_post2022`%** in `2022–2025`, a jump of **`r diff_intent_pp` percentage points** (@tbl-period-intent).
+2. **Criterion 2 (Identify driving risk domain and subdomain) — Met:** The `Malicious Actors & Misuse` domain expanded by **`r diff_misuse_pp` percentage points** between periods (@fig-domain-period), and **`r pct_top_misuse_subdomain`%** of that domain is driven by a single subdomain: **`r top_misuse_subdomain`** (@tbl-misuse-subdomains).
+3. **Criterion 3 (Robustness to unclassified incidents and bias) — Partially met (conclusive direction, uncertain exact magnitude):** Even though **`r pct_unclassified_2025`%** of 2025 logs remain unclassified, the post-2022 shift is already well established in fully classified years like 2023 (**`r pct_intent_2023`%** intentional). However, media reporting bias means the exact percentages reflect *newsworthy* harms rather than a census of all AI failures.
+
+### Limitations and Next Steps in CRISP-DM
+
+* **Media salience bias:** Journalists are more likely to report dramatic deepfake scams involving celebrities, politicians, or schools than routine algorithmic bias in credit scoring or hospital scheduling. Consequently, the **`r pct_intent_post2022`%** post-2022 intentional share likely overstates the prevalence of misuse relative to silent technical failures.
+* **Classification backlog in 2025:** Dropping the `r n_removed_unclassified` unclassified rows from `2015–2025` could bias the 2025 figure if editors classify straightforward fraud stories faster than complex technical failures.
+* **Recommended next iteration:** In a follow-up CRISP-DM cycle, we would incorporate `report_count` to weight or filter incidents by media attention, cross-check `responsible_entity` (`Human` vs `AI`) against `intent`, and re-run the 2025 scripts once the remaining `r n_unclassified_2025` incidents receive MIT taxonomy labels.
+
+---
+
+
+
 
 ## 6. Deployment and Communication
