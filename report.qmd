@@ -1,0 +1,48 @@
+---
+title: "From Accidents to Misuse: How Reported AI Harm Has Changed Since 2015"
+author: "Abhiyankar Sindhu"
+date: 27 Oct 2026
+format:
+  html:
+    embed-resources: true
+    toc: true
+    toc-depth: 2
+    theme: cosmo
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+source("R/01-load-data.R")
+```
+
+## 1. Business Understanding
+
+### Stakeholder and Research Question
+
+This report is written for policy and resource-allocation leads at the **UK AI Security Institute (AISI)** and similar regulatory bodies. Public-sector AI regulators face a practical budget question: should oversight resources go primarily towards engineering reliability standards that prevent AI systems from failing by accident, or towards misuse prevention, detection, and enforcement that stop people from abusing AI tools deliberately?
+
+To help inform that balance, this analysis investigates the following question:
+
+> **Since 2015, has the balance of reported AI incidents shifted from AI systems failing by accident towards people deliberately misusing AI, and which types of harm drove the change?**
+
+### Success Criteria
+
+Before inspecting the results, three measurable criteria were set to evaluate whether the evidence supports a clear policy recommendation:
+
+1.  **Magnitude of the shift in intent:** Measure the percentage share of intentional incidents before 2022 (`2015–2021`) versus from 2022 onwards (`2022–2025`), and determine whether the increase exceeds a substantive threshold of **15 percentage points**.
+2.  **Primary risk domain driver:** Identify which specific risk domain(s) and subdomain(s) account for the majority of the change between the two periods.
+3.  **Robustness to data constraints:** Assess whether the observed shift remains larger than the share of unclassified recent incidents and evaluate how media reporting bias affects the conclusion.
+
+## 2. Data Understanding
+
+## 3. Data Preparation
+
+## 4. Analysis
+
+## 5. Evaluation
+
+## 6. Deployment and Communication
