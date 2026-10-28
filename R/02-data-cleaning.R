@@ -123,3 +123,73 @@ pct_intent_pre2022 <- period_intent_table$`Intentional Share (%)`[1]
 pct_intent_post2022 <- period_intent_table$`Intentional Share (%)`[2]
 diff_intent_pp <- round(pct_intent_post2022 - pct_intent_pre2022, 1)
 
+
+
+# calculate Risk Domain shares within each period
+domain_period_summary <- incidents_clean |>
+  count(period, risk_domain_short, name = "n") |>
+  group_by(period) |>
+  mutate(
+    share = round((n / sum(n)) * 100, 1)
+  ) |>
+  ungroup()
+
+# pull pre-2022 and post-2022 shares for top domains for inline text
+pct_misuse_pre2022 <- domain_period_summary |>
+  filter(
+    period == "2015-2021 (Pre-2022)",
+    risk_domain_short == "Malicious Actors & Misuse"
+  ) |>
+  pull(share)
+
+pct_misuse_post2022 <- domain_period_summary |>
+  filter(
+    period == "2022-2025 (2022 Onwards)",
+    risk_domain_short == "Malicious Actors & Misuse"
+  ) |>
+  pull(share)
+
+diff_misuse_pp <- round(pct_misuse_post2022 - pct_misuse_pre2022, 1)
+
+pct_safety_pre2022 <- domain_period_summary |>
+  filter(
+    period == "2015-2021 (Pre-2022)",
+    risk_domain_short == "System Safety & Failures"
+  ) |>
+  pull(share)
+
+pct_safety_post2022 <- domain_period_summary |>
+  filter(
+    period == "2022-2025 (2022 Onwards)",
+    risk_domain_short == "System Safety & Failures"
+  ) |>
+  pull(share)
+
+pct_discrim_pre2022 <- domain_period_summary |>
+  filter(
+    period == "2015-2021 (Pre-2022)",
+    risk_domain_short == "Discrimination & Toxicity"
+  ) |>
+  pull(share)
+
+pct_discrim_post2022 <- domain_period_summary |>
+  filter(
+    period == "2022-2025 (2022 Onwards)",
+    risk_domain_short == "Discrimination & Toxicity"
+  ) |>
+  pull(share)
+
+# break down Malicious Actors & Misuse by Risk Subdomain
+misuse_subdomains <- incidents_clean |>
+  filter(risk_domain == "Malicious Actors & Misuse") |>
+  count(risk_subdomain, sort = TRUE, name = "Incidents") |>
+  mutate(
+    `Share of Misuse (%)` = round((Incidents / sum(Incidents)) * 100, 1)
+  ) |>
+  rename(`Risk Subdomain` = risk_subdomain)
+
+top_misuse_subdomain <- misuse_subdomains$`Risk Subdomain`[1]
+n_top_misuse_subdomain <- misuse_subdomains$Incidents[1]
+n_total_misuse <- sum(misuse_subdomains$Incidents)
+pct_top_misuse_subdomain <- misuse_subdomains$`Share of Misuse (%)`[1]
+
