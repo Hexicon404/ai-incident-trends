@@ -51,5 +51,4 @@ yearly_all_counts <- raw_incidents |>
   count(year, name = "incidents")
 
 
-
     
