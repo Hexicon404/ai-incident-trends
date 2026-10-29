@@ -217,7 +217,14 @@ Drilling into the **`r n_total_misuse` incidents** classified under `Malicious A
 
 ---
 
-
-
-
 ## 6. Deployment and Communication
+
+### Executive Summary for the UK AI Security Institute
+
+For policy and resource-allocation leads at the UK AI Security Institute, the evidence in the AI Incident Database shows a fundamental change in the nature of reported AI harm. Prior to 2022, roughly three-quarters of logged AI incidents were unintentional failures—such as flawed content filters, biased hiring or policing algorithms, and autonomous vehicle collisions. Since 2022, deliberate human misuse has overtaken accidental system failure, rising from **`r pct_intent_pre2022`%** of classified incidents in `2015–2021` to **`r pct_intent_post2022`%** in `2022–2025` (and reaching **`r pct_intent_2025`%** in 2025). Nearly three-quarters (**`r pct_top_misuse_subdomain`%**) of all malicious misuse incidents involve **fraud, scams, and targeted manipulation**.
+
+While engineering safety evaluations remain necessary—because accidental failures still occur alongside misuse—technical reliability testing alone will not address the fastest-growing source of public AI harm. Regulatory effort should expand downstream safeguards aimed at deliberate abuse: mandatory provenance and watermarking standards for synthetic audio and video, rapid takedown and abuse-monitoring requirements for generative AI providers, and closer coordination with financial fraud and law-enforcement agencies.
+
+
+
+
