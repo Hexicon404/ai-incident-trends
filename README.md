@@ -1,4 +1,4 @@
-# AI Incident Trends: From Accidents to Deliberate Misuse (2015–2025)
+# AI Incident Trends: From Accidents to Misuse
 
 **Author:** Abhiyankar Sindhu  
 **Research Question:** Since 2015, has the balance of reported AI incidents shifted from AI systems failing by accident towards people deliberately misusing AI, and which types of harm drove the change?
